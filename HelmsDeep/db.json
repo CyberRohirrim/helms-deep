@@ -1,0 +1,38 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "userName": "selcuk",
+      "userPwd": "12345",
+      "authorityId": 1
+    },
+    {
+      "id": 2,
+      "userName": "selcuk1",
+      "userPwd": "12345",
+      "authorityId": 2
+    },
+    {
+      "id": 3,
+      "userName": "selcuk2",
+      "userPwd": "12345",
+      "authorityId": 1
+    },
+    {
+      "id": 4,
+      "userName": "mehmet",
+      "userPwd": "1234",
+      "authorityId": 1
+    }
+  ],
+  "authorities": [
+    {
+      "id": 1,
+      "authorityName": "user"
+    },
+    {
+      "id": 2,
+      "authorityName": "admin"
+    }
+  ]
+}
