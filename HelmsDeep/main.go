@@ -1,11 +1,7 @@
 package main
 
-import (
-	"helmsdeep/getpost"
-)
+import "helmsdeep/httpcommands"
 
 func main() {
-	//getpost.UserPost()
-	//getpost.UserDelete()
-	getpost.UserGet()
+	httpcommands.Demo1()
 }
