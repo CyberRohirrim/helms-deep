@@ -3,7 +3,6 @@ package httpcommands
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -18,7 +17,7 @@ type User struct {
 	Id          string `json:"id"`
 	UserName    string `json:"userName"`
 	UserPwd     string `json:"userPwd"`
-	AuthorityId int    `json:"authorityId"`
+	AuthorityId string `json:"authorityId"`
 }
 type Authority struct {
 	Id            int `json:"id"`
@@ -41,21 +40,25 @@ func getOneUser(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(user)
 		}
 	}
-	fmt.Fprintf(w, "Key: "+key)
 
 }
 
 func newUser(w http.ResponseWriter, r *http.Request) {
-	requestBody, _ := ioutil.ReadAll(r.Body)
+	//requestBody, _ := ioutil.ReadAll(r.Body)
 	var user User
-	json.Unmarshal(requestBody, &user)
+
+	json.NewDecoder(r.Body).Decode(&user)
+
 	Users = append(Users, user)
+
+	fmt.Println(r.Body)
 
 	json.NewEncoder(w).Encode(user)
 }
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+
 	key := vars["id"]
 
 	for i, user := range Users {
@@ -69,12 +72,15 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	userId := mux.Vars(r)["id"]
 
 	var updateUser User
-	requestBody, err := ioutil.ReadAll(r.Body)
+	/*requestBody, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
 		fmt.Println("User couldn't add")
 	}
 	json.Unmarshal(requestBody, &updateUser)
+	*/
+
+	json.NewDecoder(r.Body).Decode(&updateUser)
 
 	for i, selectedUser := range Users {
 		if selectedUser.Id == userId {
@@ -95,23 +101,24 @@ func handleRequest() {
 
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/", homePage)
-	myRouter.HandleFunc("/users", allUsers)
+	myRouter.HandleFunc("/users", allUsers).Methods("GET")
 	myRouter.HandleFunc("/users", newUser).Methods("POST")
 	myRouter.HandleFunc("/users/{id}", UpdateUser).Methods("PATCH")
 	myRouter.HandleFunc("/users/{id}", deleteUser).Methods("DELETE")
 
-	myRouter.HandleFunc("/users/{id}", getOneUser)
+	myRouter.HandleFunc("/users/{id}", getOneUser).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
 
 func Demo1() {
 	Users = []User{
 
-		User{"1", "Selcuk", "11234", 1},
-		User{"2", "Selcuk2", "12434", 2},
-		User{"3", "Selcuk1", "1234", 3},
-		User{"4", "Selcuk3", "12324", 1},
-		User{"5", "Selcuk5", "1234", 1},
+		User{"1", "Selcuk", "11234", "1"},
+		User{"2", "Selcuk2", "12434", "2"},
+		User{"3", "Selcuk1", "1234", "3"},
+		User{"4", "Selcuk3", "12324", "1"},
+		User{"5", "Selcuk5", "1234", "1"},
+		User{"7", "Selcuk7", "51241", "2"},
 	}
 
 	handleRequest()
